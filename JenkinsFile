@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    environment {
+        GIT_CREDENTIALS = credentials('GitHub_Credential')
+        DEBUG_BUILD_DESTINATION = 'id=F5A2A751-7732-46E3-BBD4-3804814228C8'
+        XCODEBUILD_TARGET_OPTIONS = '-workspace FreTre.xcworkspace -scheme FreTre -configuration Debug'
+        XCODEBUILD_OPTIONS = '-derivedDataPath ./build -quiet'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    git branch: 'main', credentialsId: GIT_CREDENTIALS, url: 'https://github.com/stotic-dev/FreTreNew.git'
+                }
+                sh 'pwd; ls -al'
+            }
+        }
+        stage('BuildDebugScheme') {
+            steps {
+                script {
+                    xcodebuild XCODEBUILD_TARGET_OPTIONS -destination DEBUG_BUILD_DESTINATION XCODEBUILD_OPTIONS build
+                }
+                echo 'successed build FreTre.'
+            }
+        }
+    }
+}
