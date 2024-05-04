@@ -1,0 +1,36 @@
+@startuml
+
+start
+
+partition CheckOut Repository {
+    if (FreTreAppのリポジトリのどこかのブランチにPushがあったかどうか) then (NO))
+        end
+    endif
+
+    if (workspaceにFreTreAppのリポジトリがクローンされているか) then (NO)
+        :workspaceにFreTreAppのリポジトリをクローン;
+    endif
+
+    :workspaceのリポジトリをPushされたブランチにチェックアウトしてPull;
+}
+
+partition Build App On Simulator {
+    :workspaceのFreTreAppをシミュレータービルド;
+
+    if (ビルドに成功したかどうか) then (NO)
+        end
+    endif
+}
+
+partition Build App For Unit Test {
+    :workspaceのFreTreAppで単体テストを実行;
+
+    if (単体テストの全てのケースが成功したかどうか) then (NO)
+        end
+    endif
+}
+
+:ワークフローを完了;
+end
+
+@enduml
