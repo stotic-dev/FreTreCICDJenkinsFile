@@ -16,7 +16,9 @@ pipeline {
             }
         }
         stage("Pod Install") {
-            sh "pod install"
+            steps {
+                sh "pod install"
+            }
         }
         stage('BuildDebugScheme') {
             steps {
