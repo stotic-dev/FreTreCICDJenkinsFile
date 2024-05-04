@@ -3,6 +3,10 @@ pipeline {
     environment {
         GIT_CREDENTIALS = credentials('GitHub_Credential')
         DEBUG_BUILD_DESTINATION = 'id=F5A2A751-7732-46E3-BBD4-3804814228C8'
+        XCODEBUILD_TARGET_SCHEME = 'FreTre'
+        XCODEBUILD_TARGET_WORKSPACE = 'FreTre.xcworkspace'
+        XCODEBUILD_TARGET_CONFIG = 'Debug'
+        XCODEBUILD_TEST_TARGET = 'FreTreTests'
         XCODEBUILD_TARGET_OPTIONS = '-workspace FreTre.xcworkspace -scheme FreTre -configuration Debug'
         XCODEBUILD_OPTIONS = '-derivedDataPath ./build -quiet'
     }
@@ -15,15 +19,22 @@ pipeline {
                 sh 'pwd; ls -al'
             }
         }
-        stage("Pod Install") {
+        stage('Pod Install') {
             steps {
                 sh "LANG=en_US.UTF-8 /opt/homebrew/bin/pod install"
+                echo 'successed pod install.'
             }
         }
         stage('BuildDebugScheme') {
             steps {
-                sh "xcodebuild ${XCODEBUILD_TARGET_OPTIONS} -destination ${DEBUG_BUILD_DESTINATION} ${XCODEBUILD_OPTIONS} build"
+                sh "xcodebuild -workspace ${XCODEBUILD_TARGET_WORKSPACE} -scheme ${XCODEBUILD_TARGET_SCHEME} -configuration ${XCODEBUILD_TARGET_CONFIG} -destination ${DEBUG_BUILD_DESTINATION} ${XCODEBUILD_OPTIONS} build"
                 echo 'successed build FreTre.'
+            }
+        }
+        stages('UnitTest') {
+            steps {
+                sh "xcodebuild test -workspace ${XCODEBUILD_TARGET_WORKSPACE} -scheme ${XCODEBUILD_TARGET_SCHEME} -configuration ${XCODEBUILD_TARGET_CONFIG} -destination ${DEBUG_BUILD_DESTINATION} -only-testin ${XCODEBUILD_TEST_TARGET}"
+                echo 'successed run unit test FreTre.'
             }
         }
     }
