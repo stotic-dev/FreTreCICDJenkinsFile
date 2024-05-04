@@ -1,0 +1,2 @@
+# FreTreCICDJenkinsFile
+FreTreAppのCICD用ワークフローのJenkinsFile
