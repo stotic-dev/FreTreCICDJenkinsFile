@@ -14,6 +14,15 @@ partition CheckOut Repository {
     :workspaceのリポジトリをPushされたブランチにチェックアウトしてPull;
 }
 
+partition Pod Install {
+    if (PodFileの更新があるもしくはPodのビルドができている) then (NO)
+        :PodFileに記載のライブラリをビルドする;
+    endif
+    if (Podコマンドが成功したかどうか) then (NO)
+        end
+    endif
+}
+
 partition Build App On Simulator {
     :workspaceのFreTreAppをシミュレータービルド;
 
