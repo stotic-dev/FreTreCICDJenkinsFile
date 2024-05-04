@@ -15,6 +15,9 @@ pipeline {
                 sh 'pwd; ls -al'
             }
         }
+        stage("Pod Install") {
+            sh "pod install"
+        }
         stage('BuildDebugScheme') {
             steps {
                 sh "xcodebuild ${XCODEBUILD_TARGET_OPTIONS} -destination ${DEBUG_BUILD_DESTINATION} ${XCODEBUILD_OPTIONS} build"
