@@ -17,9 +17,7 @@ pipeline {
         }
         stage('BuildDebugScheme') {
             steps {
-                script {
-                    xcodebuild XCODEBUILD_TARGET_OPTIONS -destination DEBUG_BUILD_DESTINATION XCODEBUILD_OPTIONS build
-                }
+                sh "xcodebuild ${XCODEBUILD_TARGET_OPTIONS} -destination ${DEBUG_BUILD_DESTINATION} ${XCODEBUILD_OPTIONS} build"
                 echo 'successed build FreTre.'
             }
         }
