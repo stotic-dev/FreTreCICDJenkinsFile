@@ -17,7 +17,7 @@ pipeline {
         }
         stage("Pod Install") {
             steps {
-                sh "pod install"
+                sh "LANG=en_US.UTF-8 pod install"
             }
         }
         stage('BuildDebugScheme') {
