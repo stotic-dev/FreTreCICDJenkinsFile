@@ -13,7 +13,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    git branch: 'main', credentialsId: GIT_CREDENTIALS, url: 'https://github.com/stotic-dev/FreTreNew.git'
+                    git branch: '*', credentialsId: GIT_CREDENTIALS, url: 'https://github.com/stotic-dev/FreTreNew.git'
                 }
                 sh 'pwd; ls -al'
             }
