@@ -30,7 +30,7 @@ pipeline {
         }
         stage('UnitTest') {
             steps {
-                sh "xcodebuild test -workspace ${XCODEBUILD_TARGET_WORKSPACE} -scheme ${XCODEBUILD_TARGET_SCHEME} -configuration ${XCODEBUILD_TARGET_CONFIG} -destination ${DEBUG_BUILD_DESTINATION} -only-testin ${XCODEBUILD_TEST_TARGET} -quiet"
+                sh "xcodebuild test -workspace ${XCODEBUILD_TARGET_WORKSPACE} -scheme ${XCODEBUILD_TARGET_SCHEME} -configuration ${XCODEBUILD_TARGET_CONFIG} -destination ${DEBUG_BUILD_DESTINATION} -only-testing ${XCODEBUILD_TEST_TARGET} -quiet"
                 echo 'successed run unit test FreTre.'
             }
         }
