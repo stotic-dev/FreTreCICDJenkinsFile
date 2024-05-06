@@ -1,3 +1,13 @@
+void setBuildStatus(String message, String state) {
+  step([
+      $class: "GitHubCommitStatusSetter",
+      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/stotic-dev/FreTreNew.git"],
+      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
+      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+  ]);
+}
+
 pipeline {
     agent any
     environment {
@@ -10,8 +20,14 @@ pipeline {
         XCODEBUILD_DERIVEDDATA_PATH = './build'
     }
     stages {
+        stage('Initial Job') {
+            steps {
+                updateGitHubCommitStatus("PENDING")
+            }
+        }
         stage('Checkout') {
             steps {
+                githubNotify status: "PENDING", credentialsId: "my-credentials-id", account: "my-account", repo: "FreTreNew"
                 checkout([$class: 'GitSCM', branches: [[name: '*/*']], userRemoteConfigs: [[url: 'https://github.com/stotic-dev/FreTreNew.git']]])
                 sh 'pwd; ls -al'
             }
@@ -34,5 +50,19 @@ pipeline {
                 echo 'successed run unit test FreTre.'
             }
         }
+    }
+    post {
+        success {
+            updateGitHubCommitStatus("SUCCESS")
+        }
+        failure {
+            updateGitHubCommitStatus("FAILURE")
+        }
+    }
+}
+
+def updateGitHubCommitStatus(status: String) {
+    withCredentials([usernamePassword(credentialsId: 'GitHub_Credential', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+        sh 'curl -X POST --user $USERNAME:$PASSWORD --data  "{\\"state\\": $status}" --url $GITHUB_API_URL/statuses/$GIT_COMMIT'
     }
 }
