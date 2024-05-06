@@ -12,9 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    git branch: '*', credentialsId: GIT_CREDENTIALS, url: 'https://github.com/stotic-dev/FreTreNew.git'
-                }
+                checkout([$class: 'GitSCM', branches: [[name: '*/*']], userRemoteConfigs: [[url: 'https://github.com/stotic-dev/FreTreNew.git']]])
                 sh 'pwd; ls -al'
             }
         }
