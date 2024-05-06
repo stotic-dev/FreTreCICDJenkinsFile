@@ -11,7 +11,7 @@ void setBuildStatus(String message, String state) {
 pipeline {
     agent any
     environment {
-        GITHUB_API_URL='https://api.github.com/repos/FreTreNew'
+        GITHUB_API_URL='https://api.github.com/repos/stotic-dev/FreTreNew'
         DEBUG_BUILD_DESTINATION = 'id=F5A2A751-7732-46E3-BBD4-3804814228C8'
         XCODEBUILD_TARGET_SCHEME = 'FreTre'
         XCODEBUILD_TARGET_WORKSPACE = 'FreTre.xcworkspace'
@@ -22,7 +22,7 @@ pipeline {
     stages {
         stage('Initial Job') {
             steps {
-                updateGitHubCommitStatus("PENDING")
+                updateGitHubCommitStatus("pending")
             }
         }
         stage('Checkout') {
@@ -52,16 +52,16 @@ pipeline {
     }
     post {
         success {
-            updateGitHubCommitStatus("SUCCESS")
+            updateGitHubCommitStatus("success")
         }
         failure {
-            updateGitHubCommitStatus("FAILURE")
+            updateGitHubCommitStatus("failure")
         }
     }
 }
 
 def updateGitHubCommitStatus(String status) {
     withCredentials([usernamePassword(credentialsId: 'GitHub_Credential', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-        sh 'curl -X POST --user $USERNAME:$PASSWORD --data  "{\\"state\\": $status}" --url $GITHUB_API_URL/statuses/$GIT_COMMIT'
+        sh 'curl -X POST --user $USERNAME:$PASSWORD --data \\'{"state": ${status}}\\' --url $GITHUB_API_URL/statuses/$GIT_COMMIT'
     }
 }
