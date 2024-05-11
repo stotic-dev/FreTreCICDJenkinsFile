@@ -1,6 +1,6 @@
 void updateGitHubCommitStatus(String status) {
     echo status
-    def SHA = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+    def SHA = $.pull_request.head_commit.id
     withCredentials([usernamePassword(credentialsId: 'GitHub_Credential', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
         sh 'curl -X POST --user $USERNAME:$PASSWORD --data "{\\"state\\": \\"${status}\\"}" --url $GITHUB_API_URL/statuses/$SHA'
     }
